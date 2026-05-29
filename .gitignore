@@ -15,3 +15,8 @@ postgres_data/
 
 # Notes perso (pas pour le repo public)
 presentation-memo.md
+
+# Python / venv
+dashboard/.venv/
+__pycache__/
+*.pyc

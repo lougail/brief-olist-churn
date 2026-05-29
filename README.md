@@ -75,6 +75,10 @@ brief-olist-churn/
 ├── 05-vue-finale.sql       # CREATE VIEW v_customer_features
 ├── 06-optimisation.sql     # 5 index + MATERIALIZED VIEW (bonus)
 │
+├── dashboard/              # Dashboard Streamlit au-dessus de la vue
+│   ├── app.py
+│   └── requirements.txt
+│
 ├── schema.md               # Diagramme ER de la base (mermaid)
 └── README.md
 ```
@@ -144,9 +148,34 @@ J'ai mesuré avec `EXPLAIN (ANALYZE, BUFFERS)`. Les temps varient un peu d'une e
 
 L'écart entre "sans index" et "avec index" est faible parce que la requête lit toutes les lignes (pas de filtre). C'est la materialized view qui apporte le vrai gain : on stocke le résultat précalculé une fois pour toutes.
 
+## Dashboard de visualisation
+
+Un dashboard Streamlit lit la vue matérialisée et présente les données en 4 sections : KPIs globaux, profil RFM des clients, satisfaction, et identification des clients à risque de churn.
+
+### Lancer le dashboard
+
+Prérequis : la base PostgreSQL doit tourner (`docker compose up -d`) avec les scripts 02 à 06 déjà appliqués.
+
+```bash
+cd dashboard
+python3 -m venv .venv
+.venv/bin/pip install -r requirements.txt
+.venv/bin/streamlit run app.py
+```
+
+Le dashboard est accessible sur http://localhost:8501.
+
+### Ce qu'on y voit
+
+- **KPIs** : 93 358 clients uniques, 2 801 récurrents (3% du total), 15,4 M R$ de revenue cumulé, note moyenne 4,15/5
+- **Distribution de la récence** : la plupart des clients sont silencieux depuis 6 à 12 mois
+- **Distribution de la fréquence** : 97% des clients n'ont commandé qu'une fois (= le défi principal pour prédire le churn sur ce dataset)
+- **Clients à risque identifiés** : 13 953 clients (recency > 180j et total_spent > 200 R$), représentant 5,9 M R$ de revenue cumulé (38% du CA total)
+- **Géographie** : São Paulo (SP) concentre l'essentiel des clients
+
 ## Pistes pour la suite
 
-La vue est prête à être consommée par un modèle de prédiction de churn (par exemple scikit-learn ou XGBoost). Un dashboard au-dessus de la vue (Streamlit) serait aussi un bon prolongement.
+La vue est prête à être consommée par un modèle de prédiction de churn (par exemple scikit-learn ou XGBoost).
 
 ## Auteur
 
