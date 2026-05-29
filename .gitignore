@@ -1,0 +1,17 @@
+# Données brutes (volumineuses, à télécharger depuis Kaggle)
+data/*.csv
+
+# Volumes Docker
+postgres_data/
+
+# Fichiers système
+.DS_Store
+*.log
+
+# Éditeurs
+.vscode/
+.idea/
+*.swp
+
+# Notes perso (pas pour le repo public)
+presentation-memo.md
